@@ -1,5 +1,5 @@
 const inquirer = require('inquirer')
-const fs = require('fs')
+const { writeFile, copyFile } = require('./utils/generate-site.js')
 const generatePage = require('./src/page-template.js');
 
 const promptUser = () => {
@@ -130,15 +130,26 @@ Add a New Project
     })
 }
 
-// promptUser()
-//     .then(promptProject)
-//     .then(portfolioData => {
-//         const pageHTML = generatePage(portfolioData)
+promptUser()
+    .then(promptProject)
+    .then(portfolioData => {
+        return generatePage(portfolioData)
+    })
+    .then(pageHTML => {
+        return writeFile(pageHTML)
+    })
+    .then(writeFileResp => {
+        console.log(writeFileResp)
+        return copyFile()
+    })
+    .then(copyFileResponse => {
+        console.log(copyFileResponse)
+    })
+    .catch(err => {
+        console.log(err);
+    })
 
-//         fs.writeFile('./index.html', pageHTML, err => {
-//             if (err) throw err;
-//         })
-//     })
+// .then(data => promptProject(data)) IS THIS THE SAME AS ABOVE?????????
 
 const mockData = {
     name: 'Dave',
@@ -197,10 +208,3 @@ const mockData = {
         }
     ]
 }
-
-const pageHTML = generatePage(mockData)
-fs.writeFile('./index.html', pageHTML, err => {
-    if (err) throw err;
-})
-
-// .then(data => promptProject(data)) IS THIS THE SAME AS 3 LINES ABOVE?????????
